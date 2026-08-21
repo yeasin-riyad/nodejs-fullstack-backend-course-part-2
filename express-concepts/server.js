@@ -8,6 +8,7 @@ const {
 const { globalErrorhandler } = require("./middleware/errorHandler");
 const { urlVersioning } = require("./middleware/apiVersioning");
 const { createBasicRateLimiter } = require("./middleware/rateLimiting.js");
+const itemRoutes = require("./routes/item-routes.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,10 +18,11 @@ app.use(requestLogger);
 app.use(addTimeStamp);
 
 app.use(configureCors());
-app.use(createBasicRateLimiter(2, 15 * 60 * 1000)); // 100 request per 15 minutes
+app.use(createBasicRateLimiter(100, 15 * 60 * 1000)); // 100 request per 15 minutes
 app.use(express.json());
 
 app.use(urlVersioning("v1"));
+app.use("/api/v1", itemRoutes);
 
 app.use(globalErrorhandler);
 
